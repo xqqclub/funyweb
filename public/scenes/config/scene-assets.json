@@ -1,0 +1,168 @@
+{
+  "working": {
+    "mobile": {
+      "background": "/scenes/mobile/backgrounds/city-office-day.webp",
+      "building": {
+        "src": "/scenes/shared/buildings/office-working.webp",
+        "x": 120,
+        "y": 420,
+        "width": 840
+      },
+      "character": {
+        "src": "/scenes/shared/characters/main-working.webp",
+        "x": 470,
+        "y": 1040,
+        "width": 180
+      },
+      "props": [
+        {
+          "src": "/scenes/shared/props/effect-office-glow.webp",
+          "x": 630,
+          "y": 360,
+          "width": 180
+        }
+      ]
+    },
+    "desktop": {
+      "background": "/scenes/desktop/backgrounds/city-office-day.webp",
+      "building": {
+        "src": "/scenes/shared/buildings/office-working.webp",
+        "x": 530,
+        "y": 150,
+        "width": 900
+      },
+      "character": {
+        "src": "/scenes/shared/characters/main-working.webp",
+        "x": 980,
+        "y": 640,
+        "width": 210
+      },
+      "props": [
+        {
+          "src": "/scenes/shared/props/effect-office-glow.webp",
+          "x": 1160,
+          "y": 170,
+          "width": 220
+        }
+      ]
+    }
+  },
+  "going_home": {
+    "mobile": {
+      "background": "/scenes/mobile/backgrounds/road/road-day.png",
+      "building": {
+        "src": "/scenes/shared/buildings/home-going-home.webp",
+        "x": 110,
+        "y": 500,
+        "width": 860
+      },
+      "character": {
+        "src": "/scenes/shared/characters/main-going-home.webp",
+        "x": 420,
+        "y": 1180,
+        "width": 180
+      },
+      "props": [
+        {
+          "src": "/scenes/shared/props/effect-commute-arrow.webp",
+          "x": 360,
+          "y": 980,
+          "width": 220
+        }
+      ]
+    },
+    "desktop": {
+      "background": "/scenes/desktop/backgrounds/road/road-day.png",
+      "building": {
+        "src": "/scenes/shared/buildings/home-going-home.webp",
+        "x": 500,
+        "y": 160,
+        "width": 920
+      },
+      "character": {
+        "src": "/scenes/shared/characters/main-going-home.webp",
+        "x": 930,
+        "y": 650,
+        "width": 220
+      },
+      "props": [
+        {
+          "src": "/scenes/shared/props/effect-commute-arrow.webp",
+          "x": 820,
+          "y": 590,
+          "width": 260
+        }
+      ]
+    }
+  },
+  "biking": {
+    "mobile": {
+      "background": "/scenes/mobile/backgrounds/road/road-day.png",
+      "character": {
+        "src": "/scenes/shared/characters/main-going-home.png",
+        "x": 420,
+        "y": 1160,
+        "width": 220
+      },
+      "props": []
+    },
+    "desktop": {
+      "background": "/scenes/desktop/backgrounds/road/road-day.png",
+      "character": {
+        "src": "/scenes/shared/characters/main-going-home.png",
+        "x": 930,
+        "y": 635,
+        "width": 260
+      },
+      "props": []
+    }
+  },
+  "cleaning": {
+    "mobile": {
+      "background": "/scenes/mobile/backgrounds/forest-home-night.webp",
+      "building": {
+        "src": "/scenes/shared/buildings/home-cleaning.webp",
+        "x": 110,
+        "y": 500,
+        "width": 860
+      },
+      "character": {
+        "src": "/scenes/shared/characters/main-cleaning.webp",
+        "x": 445,
+        "y": 1120,
+        "width": 170
+      },
+      "props": [
+        {
+          "src": "/scenes/shared/props/effect-cleaning-bubbles.webp",
+          "x": 520,
+          "y": 920,
+          "width": 180
+        }
+      ]
+    },
+    "desktop": {
+      "background": "/scenes/desktop/backgrounds/forest-home-night.webp",
+      "building": {
+        "src": "/scenes/shared/buildings/home-cleaning.webp",
+        "x": 500,
+        "y": 160,
+        "width": 920
+      },
+      "character": {
+        "src": "/scenes/shared/characters/main-cleaning.webp",
+        "x": 980,
+        "y": 630,
+        "width": 200
+      },
+      "props": [
+        {
+          "src": "/scenes/shared/props/effect-cleaning-bubbles.webp",
+          "x": 1120,
+          "y": 560,
+          "width": 220
+        }
+      ]
+    }
+  }
+}

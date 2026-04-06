@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAllowedAdmin() {
+      return signedIn() &&
+        request.auth.token.email != null &&
+        request.auth.token.email in [
+          "xqqclub@gmail.com"
+        ];
+    }
+
+    match /actors/{actorId} {
+      allow read: if true;
+      allow create, update, delete: if isAllowedAdmin();
+    }
+
+    match /scene_config/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAllowedAdmin();
+    }
+  }
+}

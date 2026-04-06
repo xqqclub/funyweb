@@ -1,0 +1,47 @@
+:root {
+  --bg-top: #0b2230;
+  --bg-bottom: #050c12;
+  --ink: #ebfbff;
+  --panel: rgba(9, 21, 30, 0.88);
+  --panel-border: rgba(132, 203, 214, 0.16);
+  --road: #706677;
+  --grass: #9acb7e;
+  --grass-dark: #6ea05f;
+  --office-front: #df7d5e;
+  --office-side: #c76449;
+  --home-front: #f6b36c;
+  --home-side: #dd9052;
+  --park-front: #7dc7a6;
+  --park-side: #5ba07f;
+  --skyline: #caa55f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(126, 207, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  color: var(--ink);
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}

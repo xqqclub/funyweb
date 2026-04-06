@@ -1,0 +1,19 @@
+.next
+.next *
+node_modules
+.netlify
+.netlify_backup_*
+.env
+.env.local
+*.local
+dist
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+fridgechef-yi4qt-firebase-adminsdk-*.json
+*.DS_Store
+*.tsbuildinfo
+1000019166.jpg
+1000019695.jpg
+1000019696.jpg
