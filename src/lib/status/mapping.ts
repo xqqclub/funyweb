@@ -61,6 +61,8 @@ export const defaultActorState: ActorState = {
   name: "D-exHor",
   status: "working",
   homeMode: "idle",
+  speechText: "",
+  speechType: "custom",
   location: "office",
   updatedAt: new Date("2026-04-04T00:00:00.000Z").toISOString(),
   updatedBy: "system"
@@ -88,6 +90,22 @@ export const atHomeModeMeta: Record<
   reading: {
     label: "在家・讀書",
     description: "主角在家中讀書，整體節奏安靜且專注。"
+  },
+  thinking: {
+    label: "在家・沉思",
+    description: "主角正在家中沉思，畫面會呈現更安靜內斂的節奏。"
+  },
+  eating: {
+    label: "在家・吃飯",
+    description: "主角正在家裡吃飯，整體氛圍更有生活感。"
+  },
+  cooking: {
+    label: "在家・烹飪",
+    description: "主角正在家中烹飪，場景會帶出更明顯的生活節奏。"
+  },
+  gardening: {
+    label: "在家・種花",
+    description: "主角正在家中種花，整體氛圍偏向悠閒且療癒。"
   }
 };
 

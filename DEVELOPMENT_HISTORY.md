@@ -299,6 +299,140 @@ To stabilize deployment:
 - asset versioning was changed from per-file mtime reads to deploy/build-based version tags
 - stale `.netlify` workspaces were cleaned or rotated when plugin publish failures occurred
 
+## Phase 11: Multiplayer Home Page
+
+The homepage was redesigned from a single-character display into a multiplayer lobby-style layout.
+
+The new layout includes:
+
+- a main stage that defaults to the primary manager character
+- a player stage list with four visible slots
+- empty placeholders while no player has joined
+- click-to-focus behavior so a player card can become the main stage
+- a right-side information panel that follows the currently focused player
+
+The player stage list now reads from Firestore `players`.
+
+The first four active players are shown on the homepage. Extra approved players are moved into a waitlist-style lobby state.
+
+## Phase 12: Player Registration and Approval
+
+Telegram was expanded from an admin-only controller into a player onboarding channel.
+
+Implemented flow:
+
+1. player opens the Telegram bot
+2. player applies to join the game
+3. an application is stored in Firestore
+4. the manager reviews the application
+5. approved players are created in `players`
+6. approved players appear in the homepage player stage list
+
+The approval model includes:
+
+- `pending`
+- `approved`
+- `rejected`
+- `blocked`
+
+The manager can also preview the player registration view from Telegram.
+
+## Phase 13: Character Catalog and Player Character Selection
+
+The character system was expanded to support multiple player character styles.
+
+Character assets were organized by gender and character id:
+
+- `public/scenes/shared/characters/male/<character-id>/`
+- `public/scenes/shared/characters/female/<character-id>/`
+
+Each character can provide its own state images, walking frames, and home-mode poses.
+
+Telegram character selection was added after approval:
+
+- players choose male or female characters
+- players choose a specific character style
+- the selected `characterGender` and `characterId` are stored on the player profile
+
+The player stage and main stage now resolve images from the character catalog when available.
+
+## Phase 14: Player Pages
+
+Dedicated player pages were introduced:
+
+- `/player/[playerId]`
+
+These pages focus directly on one player and hide the broader homepage sections such as:
+
+- player stage list
+- knowledge list
+- admin-oriented layout blocks
+
+Telegram `進入遊戲` links can point players to their own page.
+
+## Phase 15: Speech Bubble System
+
+A persistent speech bubble system was added.
+
+Users can update their character speech from Telegram using:
+
+- custom speech input
+- preset lines
+- emoji messages
+- short announcements
+- delete speech
+
+Speech bubbles:
+
+- stay visible until updated or deleted
+- appear near the focused character
+- use different styling by speech type
+- use distinct colors for manager and player identities
+
+Player cards also show a compact one-line speech preview.
+
+## Phase 16: Work Log System
+
+A `工作日誌` section was added to record state and speech changes.
+
+Each log records:
+
+- update time
+- target player
+- state
+- speech text
+- update source
+- event kind
+
+Work logs are stored in Firestore `work_logs`.
+
+The homepage shows the focused player's own work log, with five entries per page.
+
+The work log system was adjusted to avoid requiring Firestore composite indexes by querying by `targetId` and sorting/paginating in application code.
+
+## Phase 17: Platform Adapter Refactor
+
+The project was refactored toward a future multi-platform architecture.
+
+The goal is to support:
+
+- Telegram
+- LINE
+- web-based controls
+
+Key changes:
+
+- player and application records now include platform-neutral fields
+- game logic was moved into shared service modules
+- Telegram-specific UI, messages, and flow logic were extracted into `src/lib/platforms/telegram/`
+- a LINE adapter skeleton was created under `src/lib/platforms/line/`
+- a LINE webhook route skeleton was added
+
+Supporting planning documents were created:
+
+- `MULTI_PLATFORM_REFACTOR_PLAN.md`
+- `PLATFORM_ADAPTER_SPEC.md`
+
 ## Current Capabilities
 
 At the current stage, the project supports:
@@ -311,6 +445,15 @@ At the current stage, the project supports:
 - weather mode switching
 - knowledge link collection
 - admin panel with protected actions
+- multiplayer player stage list
+- Telegram player application and manager approval
+- player character selection
+- dedicated player pages
+- persistent speech bubbles
+- per-player work logs
+- platform-neutral data fields
+- Telegram adapter modules
+- LINE adapter skeleton
 
 ## Current Major Files
 
@@ -322,16 +465,34 @@ Important areas of the codebase include:
 - `src/app/api/status/route.ts`
 - `src/app/api/weather/route.ts`
 - `src/app/api/telegram/webhook/route.ts`
+- `src/app/api/line/webhook/route.ts`
+- `src/app/api/work-log/route.ts`
+- `src/app/player/[playerId]/page.tsx`
+- `src/components/scene/PlayerGallery.tsx`
+- `src/components/scene/SelectedPlayerInfo.tsx`
+- `src/components/scene/WorkLogPanel.tsx`
+- `src/components/scene/KnowledgeListPanel.tsx`
 - `src/lib/firebase/actors.ts`
+- `src/lib/firebase/players.ts`
+- `src/lib/firebase/applications.ts`
+- `src/lib/firebase/work-log.ts`
 - `src/lib/firebase/weather.ts`
 - `src/lib/firebase/knowledge.ts`
+- `src/lib/game/player-service.ts`
+- `src/lib/game/world-service.ts`
+- `src/lib/platforms/telegram/`
+- `src/lib/platforms/line/`
+- `src/lib/characters/catalog.ts`
 
 ## Suggested Next Steps
 
 Possible future directions discussed or implied during development:
 
 - multiplayer player application and approval flow
-- Telegram-based player management
+- deeper Telegram-based player management
+- complete LINE Messaging API integration
+- richer player self-service controls
+- manager-controlled player slot management
 - richer world simulation
 - more weather types
 - more interactive player-specific scenes

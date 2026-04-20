@@ -7,7 +7,16 @@ import type { ActorState, AtHomeMode } from "@/types/actor";
 const COLLECTION_NAME = "actors";
 
 function isAtHomeMode(value: unknown): value is AtHomeMode {
-  return value === "idle" || value === "gaming" || value === "streaming" || value === "reading";
+  return (
+    value === "idle" ||
+    value === "gaming" ||
+    value === "streaming" ||
+    value === "reading" ||
+    value === "thinking" ||
+    value === "eating" ||
+    value === "cooking" ||
+    value === "gardening"
+  );
 }
 
 function normalizeActorState(raw: Partial<ActorState> | undefined): ActorState {

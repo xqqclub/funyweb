@@ -22,7 +22,16 @@ function isActorStatus(status: string): status is ActorStatus {
 }
 
 function isAtHomeMode(value: string): value is AtHomeMode {
-  return value === "idle" || value === "gaming" || value === "streaming" || value === "reading";
+  return (
+    value === "idle" ||
+    value === "gaming" ||
+    value === "streaming" ||
+    value === "reading" ||
+    value === "thinking" ||
+    value === "eating" ||
+    value === "cooking" ||
+    value === "gardening"
+  );
 }
 
 export async function POST(request: Request) {

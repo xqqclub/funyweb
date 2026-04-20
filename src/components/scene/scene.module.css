@@ -15,6 +15,48 @@
   gap: 28px;
 }
 
+.playerEntryCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 22px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(11, 27, 38, 0.9), rgba(8, 18, 26, 0.84));
+  border: 1px solid rgba(148, 198, 214, 0.14);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.playerEntryTitle,
+.playerEntryLead {
+  margin: 0;
+}
+
+.playerEntryTitle {
+  color: #f5fffc;
+  font-size: 1.5rem;
+}
+
+.playerEntryLead {
+  margin-top: 8px;
+  max-width: 720px;
+  color: rgba(214, 233, 237, 0.76);
+  line-height: 1.6;
+  font-size: 0.92rem;
+}
+
+.playerEntryLink {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #f3fffc;
+  background: linear-gradient(180deg, rgba(240, 255, 250, 0.12), rgba(240, 255, 250, 0.06));
+  border: 1px solid rgba(148, 198, 214, 0.16);
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.82fr);
@@ -31,7 +73,8 @@
 .sceneCard,
 .infoPanel,
 .adminCard,
-.knowledgeCard {
+.knowledgeCard,
+.workLogCard {
   background: linear-gradient(180deg, rgba(11, 27, 38, 0.9), rgba(8, 18, 26, 0.84));
   border: 1px solid rgba(148, 198, 214, 0.14);
   border-radius: 30px;
@@ -55,7 +98,8 @@
 .sceneCard::before,
 .infoPanel::before,
 .adminCard::before,
-.knowledgeCard::before {
+.knowledgeCard::before,
+.workLogCard::before {
   content: "";
   position: absolute;
   inset: 1px;
@@ -242,6 +286,165 @@
   image-rendering: pixelated;
 }
 
+.speechBubble {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - 6px);
+  transform: translateX(-50%);
+  max-width: min(320px, 24vw);
+  min-width: 110px;
+  padding: 10px 14px;
+  border-radius: 18px 18px 18px 8px;
+  background: var(--speech-background, linear-gradient(180deg, rgba(252, 255, 254, 0.98), rgba(241, 250, 248, 0.94)));
+  color: var(--speech-text, #13202a);
+  border: 1px solid var(--speech-border, rgba(18, 37, 47, 0.1));
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.76),
+    0 0 0 1px rgba(255, 255, 255, 0.28),
+    0 0 24px var(--speech-glow, rgba(255, 255, 255, 0.08));
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+.speechBubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  width: 16px;
+  height: 16px;
+  background: inherit;
+  border-right: 1px solid var(--speech-arrow-border, rgba(18, 37, 47, 0.08));
+  border-bottom: 1px solid var(--speech-arrow-border, rgba(18, 37, 47, 0.08));
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.speechBubble span {
+  display: block;
+  position: relative;
+  z-index: 1;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  word-break: break-word;
+  text-wrap: pretty;
+}
+
+.speechcustom,
+.speechpreset {
+  background: rgba(250, 255, 253, 0.92);
+}
+
+.speechpreset {
+  box-shadow:
+    0 16px 32px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.24),
+    0 0 20px var(--speech-glow, rgba(126, 192, 255, 0.12));
+}
+
+.speechemoji {
+  min-width: 84px;
+  max-width: 120px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.98), rgba(241, 250, 248, 0.96));
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.36);
+}
+
+.speechemoji span {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.speechannouncement {
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.24),
+    0 0 18px var(--speech-glow, rgba(255, 204, 92, 0.28));
+}
+
+.speechannouncement span {
+  letter-spacing: 0.03em;
+}
+
+.speechWork {
+  left: 64%;
+  bottom: calc(100% - 2px);
+}
+
+.speechWalk {
+  left: 57%;
+  bottom: calc(100% + 4px);
+}
+
+.speechBike {
+  left: 62%;
+  bottom: calc(100% + 10px);
+}
+
+.speechClean {
+  left: 63%;
+  bottom: calc(100% + 2px);
+}
+
+.speechSleep {
+  left: 58%;
+  bottom: calc(100% + 18px);
+}
+
+.speechHome {
+  left: 60%;
+  bottom: calc(100% + 2px);
+}
+
+.speechGaming {
+  left: 64%;
+  bottom: calc(100% + 6px);
+}
+
+.speechStreaming {
+  left: 61%;
+  bottom: calc(100% + 8px);
+}
+
+.speechReading {
+  left: 58%;
+  bottom: calc(100% + 8px);
+}
+
+.characterFallback,
+.playerCardCharacterFallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  border: 1px dashed rgba(193, 225, 236, 0.28);
+  background:
+    radial-gradient(circle at 50% 32%, rgba(210, 236, 244, 0.22), transparent 18%),
+    linear-gradient(180deg, rgba(13, 28, 39, 0.56), rgba(10, 18, 27, 0.34));
+  color: rgba(235, 247, 252, 0.88);
+  text-align: center;
+  box-shadow: inset 0 -18px 30px rgba(0, 0, 0, 0.18);
+}
+
+.characterFallback span,
+.playerCardCharacterFallback span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(8, 18, 27, 0.52);
+  border: 1px solid rgba(193, 225, 236, 0.16);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
 .walkSprite {
   width: 100%;
   aspect-ratio: 360 / 660;
@@ -350,6 +553,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
   width: fit-content;
   padding: 8px 13px;
   border-radius: 999px;
@@ -358,6 +562,25 @@
   font-weight: 700;
   color: #f4fffd;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.presenceBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(239, 255, 255, 0.82);
+}
+
+.presenceBadge[data-online="true"] {
+  background: rgba(122, 255, 183, 0.14);
+  border-color: rgba(122, 255, 183, 0.22);
+  color: #dffff0;
 }
 
 .chip {
@@ -406,6 +629,43 @@
   background: linear-gradient(180deg, rgba(111, 204, 218, 0.1), rgba(78, 103, 138, 0.06));
   border: 1px solid rgba(148, 198, 214, 0.11);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.playerRulesCard {
+  padding: 16px 17px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 244, 206, 0.08), rgba(109, 157, 188, 0.05));
+  border: 1px solid rgba(148, 198, 214, 0.11);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.playerRulesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.playerRulePill {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(151, 205, 255, 0.12);
+  border: 1px solid rgba(151, 205, 255, 0.22);
+  color: #dff3ff;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.playerRulePill[data-manager="true"] {
+  background: rgba(255, 214, 126, 0.16);
+  border-color: rgba(255, 214, 126, 0.26);
+  color: #fff0ba;
+}
+
+.playerRulesList {
+  display: grid;
+  gap: 10px;
 }
 
 .missionTitle {
@@ -505,7 +765,9 @@
   color: #edf8fb;
 }
 
-.knowledgeCard {
+.playerDeck,
+.knowledgeCard,
+.workLogCard {
   position: relative;
   padding: 22px;
   display: grid;
@@ -513,11 +775,298 @@
   color: #edf8fb;
 }
 
+.playerDeck {
+  background: linear-gradient(180deg, rgba(11, 27, 38, 0.9), rgba(8, 18, 26, 0.84));
+  border: 1px solid rgba(148, 198, 214, 0.14);
+  border-radius: 30px;
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -18px 40px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+.playerDeck::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+  opacity: 0.8;
+}
+
+.playerDeckHeader,
 .knowledgeHeader {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
+}
+
+.playerDeckTitle,
+.playerDeckHeader p {
+  margin: 0;
+}
+
+.playerDeckTitle {
+  font-size: 1.45rem;
+  color: #f3fffc;
+}
+
+.playerDeckHint {
+  max-width: 420px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: rgba(214, 233, 237, 0.76);
+  text-align: right;
+}
+
+.playerDeckGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+
+.playerCard {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+  height: 100%;
+  padding: 10px;
+  border-radius: 24px;
+  border: 1px solid rgba(148, 198, 214, 0.12);
+  background: linear-gradient(180deg, rgba(237, 253, 255, 0.07), rgba(237, 253, 255, 0.04));
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background 140ms ease;
+}
+
+.playerCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(168, 226, 237, 0.28);
+}
+
+.playerCard[data-active="true"] {
+  border-color: rgba(255, 224, 129, 0.42);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.22);
+  background: linear-gradient(180deg, rgba(255, 240, 212, 0.1), rgba(237, 253, 255, 0.05));
+}
+
+.playerCardPlaceholder {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+  height: 100%;
+  padding: 10px;
+  border-radius: 24px;
+  border: 1px dashed rgba(148, 198, 214, 0.24);
+  background: linear-gradient(180deg, rgba(237, 253, 255, 0.04), rgba(237, 253, 255, 0.02));
+}
+
+.playerPlaceholderVisual {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  border-radius: 18px;
+  border: 1px dashed rgba(153, 220, 229, 0.2);
+  background:
+    radial-gradient(circle at 50% 45%, rgba(146, 207, 223, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(10, 20, 29, 0.42), rgba(10, 20, 29, 0.2));
+}
+
+.playerPlaceholderPlus {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid rgba(160, 217, 231, 0.26);
+  color: rgba(223, 247, 255, 0.72);
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.playerCardScene {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(153, 220, 229, 0.14);
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 -24px 32px rgba(2, 10, 18, 0.22);
+}
+
+.playerCardRole {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(8, 18, 27, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(243, 255, 252, 0.88);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.playerCardRole[data-manager="true"] {
+  background: rgba(255, 214, 126, 0.18);
+  border-color: rgba(255, 214, 126, 0.32);
+  color: #fff3c2;
+}
+
+.playerCardSpeech {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  max-width: 48%;
+  padding: 6px 9px;
+  border-radius: 12px 12px 12px 6px;
+  background: var(--player-speech-background, rgba(255, 255, 255, 0.92));
+  border: 1px solid var(--player-speech-border, rgba(255, 255, 255, 0.12));
+  color: var(--player-speech-text, #15232d);
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: left;
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.playerCardCharacter {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.playerCardImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.26));
+}
+
+.playerCardCharacterFallback {
+  border-radius: 18px;
+}
+
+.playerCardCharacterFallback span {
+  font-size: 0.7rem;
+}
+
+.playerCardMeta {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.playerCardNameRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+}
+
+.playerCardNameRow strong {
+  font-size: 0.98rem;
+  color: #f5fffd;
+  min-width: 0;
+  flex: 1 1 120px;
+  line-height: 1.35;
+}
+
+.playerCardBadge {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--chip-color) 18%, rgba(6, 14, 22, 0.82));
+  border: 1px solid color-mix(in srgb, var(--chip-color) 30%, rgba(255, 255, 255, 0.08));
+  color: #fbfffd;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.playerCardGhostBadge {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(148, 198, 214, 0.08);
+  border: 1px solid rgba(148, 198, 214, 0.16);
+  color: rgba(223, 247, 255, 0.78);
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.playerCardMeta p {
+  margin: 0;
+  font-size: 0.79rem;
+  line-height: 1.45;
+  color: rgba(214, 233, 237, 0.76);
+}
+
+.playerCardCharacterMeta {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(148, 198, 214, 0.08);
+  border: 1px solid rgba(148, 198, 214, 0.14);
+  color: rgba(223, 247, 255, 0.78);
+  font-size: 0.7rem;
+}
+
+.playerCardPresenceRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
+  color: rgba(214, 233, 237, 0.78);
+}
+
+.playerPresenceDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(214, 233, 237, 0.38);
+  box-shadow: 0 0 10px rgba(214, 233, 237, 0.12);
+}
+
+.playerPresenceDot[data-online="true"] {
+  background: #7affb7;
+  box-shadow: 0 0 14px rgba(122, 255, 183, 0.45);
+}
+
+.playerPresenceText {
+  font-weight: 700;
+}
+
+.playerLastActive {
+  color: rgba(214, 233, 237, 0.58);
 }
 
 .knowledgeTitle,
@@ -611,6 +1160,74 @@
   gap: 14px;
 }
 
+.workLogList {
+  display: grid;
+  gap: 12px;
+}
+
+.workLogRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(237, 253, 255, 0.07), rgba(237, 253, 255, 0.04));
+  border: 1px solid rgba(148, 198, 214, 0.11);
+}
+
+.workLogMain {
+  min-width: 0;
+  width: 100%;
+  display: grid;
+  gap: 8px;
+}
+
+.workLogTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.workLogTop strong {
+  color: #f3fffc;
+}
+
+.workLogKind {
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #efffff;
+  background: rgba(148, 198, 214, 0.14);
+  border: 1px solid rgba(148, 198, 214, 0.16);
+}
+
+.workLogKind[data-kind="speech"] {
+  background: rgba(255, 210, 138, 0.14);
+  border-color: rgba(255, 210, 138, 0.2);
+}
+
+.workLogMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: rgba(214, 233, 237, 0.72);
+}
+
+.workLogSpeech {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(241, 250, 252, 0.92);
+  overflow-wrap: anywhere;
+}
+
 .knowledgePageLink,
 .knowledgePageLinkDisabled {
   padding: 9px 12px;
@@ -623,6 +1240,7 @@
   color: #efffff;
   background: linear-gradient(180deg, rgba(15, 30, 43, 0.56), rgba(10, 22, 34, 0.46));
   border: 1px solid rgba(148, 198, 214, 0.16);
+  cursor: pointer;
 }
 
 .knowledgePageLinkDisabled {
@@ -817,6 +1435,38 @@
   background: rgba(255, 232, 183, 0.2);
   border: 1px solid rgba(255, 232, 183, 0.72);
   box-shadow: 0 0 14px rgba(255, 211, 133, 0.24);
+}
+
+.ambientThinking {
+  width: 10px;
+  height: 10px;
+  background: rgba(201, 183, 255, 0.28);
+  border: 1px solid rgba(201, 183, 255, 0.78);
+  box-shadow: 0 0 14px rgba(201, 183, 255, 0.32);
+}
+
+.ambientEating {
+  width: 9px;
+  height: 9px;
+  background: rgba(255, 215, 153, 0.26);
+  border: 1px solid rgba(255, 215, 153, 0.82);
+  box-shadow: 0 0 14px rgba(255, 190, 124, 0.28);
+}
+
+.ambientCooking {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 204, 173, 0.22);
+  border: 1px solid rgba(255, 204, 173, 0.8);
+  box-shadow: 0 0 16px rgba(255, 170, 135, 0.28);
+}
+
+.ambientGardening {
+  width: 11px;
+  height: 11px;
+  background: rgba(170, 230, 168, 0.22);
+  border: 1px solid rgba(170, 230, 168, 0.82);
+  box-shadow: 0 0 16px rgba(123, 214, 146, 0.28);
 }
 
 .sleepBubble {
@@ -1249,6 +1899,11 @@
     gap: 16px;
   }
 
+  .playerEntryCard {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .sceneColumn {
     gap: 16px;
   }
@@ -1276,6 +1931,31 @@
 
   .characterLayer {
     bottom: var(--character-bottom, 11%);
+  }
+
+  .speechBubble {
+    max-width: min(220px, 60vw);
+    padding: 9px 12px;
+  }
+
+  .speechBubble span {
+    font-size: 0.84rem;
+  }
+
+  .speechWork,
+  .speechWalk,
+  .speechBike,
+  .speechClean,
+  .speechSleep,
+  .speechHome,
+  .speechGaming,
+  .speechStreaming,
+  .speechReading {
+    left: 54%;
+  }
+
+  .speechSleep {
+    bottom: calc(100% + 12px);
   }
 
   .flashNotice {
@@ -1368,7 +2048,9 @@
   .sceneCard,
   .infoPanel,
   .adminCard,
-  .knowledgeCard {
+  .playerDeck,
+  .knowledgeCard,
+  .workLogCard {
     border-radius: 24px;
   }
 
@@ -1378,8 +2060,28 @@
 
   .infoPanel,
   .adminCard,
-  .knowledgeCard {
+  .playerDeck,
+  .knowledgeCard,
+  .workLogCard {
     padding: 18px;
+  }
+
+  .playerDeckHeader {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .playerDeckHint {
+    max-width: none;
+    text-align: left;
+  }
+
+  .playerDeckGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .playerCardScene {
+    aspect-ratio: 4 / 3.2;
   }
 
   .title {
@@ -1400,7 +2102,8 @@
   .queuePanel,
   .eventCard,
   .knowledgeRow,
-  .knowledgeEmpty {
+  .knowledgeEmpty,
+  .workLogRow {
     padding: 14px;
   }
 
@@ -1412,6 +2115,14 @@
 }
 
 @media (max-width: 640px) {
+  .playerEntryTitle {
+    font-size: 1.2rem;
+  }
+
+  .playerEntryLead {
+    font-size: 0.86rem;
+  }
+
   .topHud {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
@@ -1494,6 +2205,53 @@
     flex-direction: column;
   }
 
+  .playerDeckGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .playerCard {
+    padding: 9px;
+    border-radius: 20px;
+  }
+
+  .playerCardScene {
+    aspect-ratio: 16 / 9;
+  }
+
+  .playerCardCharacter {
+    width: min(46%, 172px) !important;
+  }
+
+  .speechBubble {
+    max-width: min(190px, 56vw);
+    min-width: 86px;
+    padding: 8px 10px;
+    border-radius: 16px 16px 16px 8px;
+  }
+
+  .speechBubble span {
+    font-size: 0.78rem;
+  }
+
+  .speechemoji {
+    min-width: 68px;
+    max-width: 88px;
+  }
+
+  .speechemoji span {
+    font-size: 1.3rem;
+  }
+
+  .playerCardNameRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .knowledgeHeader {
+    align-items: start;
+    flex-direction: column;
+  }
+
   .knowledgeHint {
     max-width: none;
     text-align: left;
@@ -1504,8 +2262,23 @@
     align-items: flex-start;
   }
 
+  .workLogRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .workLogTop {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .knowledgePager {
     justify-content: space-between;
     gap: 8px;
+  }
+
+  .workLogMeta {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

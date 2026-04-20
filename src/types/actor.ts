@@ -1,5 +1,9 @@
 export type ActorStatus = "working" | "going_home" | "cleaning" | "sleeping" | "biking" | "at_home";
-export type AtHomeMode = "idle" | "gaming" | "streaming" | "reading";
+export type AtHomeMode = "idle" | "gaming" | "streaming" | "reading" | "thinking" | "eating" | "cooking" | "gardening";
+export type CharacterGender = "male" | "female";
+export type SpeechType = "custom" | "preset" | "emoji" | "announcement";
+export type PlayerLobbyStatus = "active" | "waitlist";
+export type PlayerPlatform = "telegram" | "line" | "web";
 
 export type ActorLocation = "office" | "road" | "home";
 
@@ -8,6 +12,20 @@ export interface ActorState {
   name: string;
   status: ActorStatus;
   homeMode: AtHomeMode;
+  poseKey?: string;
+  characterGender?: CharacterGender;
+  characterId?: string;
+  speechText?: string;
+  speechType?: SpeechType;
+  lobbyStatus?: PlayerLobbyStatus;
+  joinedAt?: string;
+  platform?: PlayerPlatform;
+  platformUserId?: string;
+  platformUsername?: string;
+  telegramUserId?: string;
+  telegramUsername?: string;
+  isApproved?: boolean;
+  isManager?: boolean;
   location: ActorLocation;
   updatedAt: string;
   updatedBy: string;
