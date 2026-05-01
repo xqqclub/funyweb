@@ -19,9 +19,45 @@ service cloud.firestore {
       allow create, update, delete: if isAllowedAdmin();
     }
 
+    match /players/{playerId} {
+      allow read: if true;
+      allow create, update, delete: if isAllowedAdmin();
+    }
+
+    match /knowledge_items/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAllowedAdmin();
+    }
+
+    match /work_logs/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAllowedAdmin();
+    }
+
+    match /game_events/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAllowedAdmin();
+    }
+
+    match /game_matches/{docId} {
+      allow read, write: if isAllowedAdmin();
+    }
+
     match /scene_config/{docId} {
       allow read: if true;
       allow create, update, delete: if isAllowedAdmin();
+    }
+
+    match /applications/{docId} {
+      allow read, write: if isAllowedAdmin();
+    }
+
+    match /telegram_sessions/{docId} {
+      allow read, write: if isAllowedAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

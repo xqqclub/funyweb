@@ -1,4 +1,4 @@
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 
 import { getFirebaseClientDb } from "@/lib/firebase/client";
 import { defaultWeatherSettings } from "@/lib/weather/defaults";
@@ -31,7 +31,6 @@ export function subscribeToWeatherSettings(onChange: (settings: WeatherSettings)
 
   return onSnapshot(ref, async (snapshot) => {
     if (!snapshot.exists()) {
-      await setDoc(ref, defaultWeatherSettings);
       onChange(defaultWeatherSettings);
       return;
     }

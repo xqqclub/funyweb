@@ -12,6 +12,10 @@ function readPrivateKey() {
 }
 
 export function getFirebaseAdminApp(): App | null {
+  if (process.env.NEXT_PHASE === "phase-production-build" || process.env.SKIP_FIREBASE_ADMIN_DURING_BUILD === "1") {
+    return null;
+  }
+
   const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
   const privateKey = readPrivateKey();

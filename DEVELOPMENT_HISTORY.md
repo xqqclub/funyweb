@@ -433,6 +433,99 @@ Supporting planning documents were created:
 - `MULTI_PLATFORM_REFACTOR_PLAN.md`
 - `PLATFORM_ADAPTER_SPEC.md`
 
+## Phase 18: Firestore Security Rules Hardening
+
+Firestore was moved away from the original test-mode posture into an explicit production-oriented ruleset.
+
+The rule design follows the current application architecture:
+
+- public read access is allowed for display data used by the homepage
+- browser clients do not directly write gameplay state
+- gameplay writes are handled through trusted backend routes and Firebase Admin SDK
+- manager-only operational data stays private
+- all unknown collections are denied by default
+
+Publicly readable collections:
+
+- `actors`
+- `players`
+- `knowledge_items`
+- `work_logs`
+- `scene_config`
+
+Manager-only collections:
+
+- `applications`
+- `telegram_sessions`
+
+Rules were updated in:
+
+- `firestore.rules`
+
+Firebase project deployment metadata was also added so rules can be deployed by CLI in the future:
+
+- `.firebaserc`
+- `firebase.json`
+
+The active Firebase project is:
+
+- `fridgechef-yi4qt`
+
+Frontend realtime listeners were also adjusted so browser clients no longer create default documents directly when a document is missing.
+
+Updated client files:
+
+- `src/lib/firebase/actors-client.ts`
+- `src/lib/firebase/weather-client.ts`
+
+The Firestore rules were manually published through Firebase Console on 2026-05-01.
+
+## Phase 19: Multiplayer Game Loop Prototype
+
+The first true multiplayer game loop was planned and implemented around rock-paper-scissors.
+
+Gameplay direction:
+
+- players use Telegram or future LINE commands as the game controller
+- the website acts as the shared live stage
+- players can start or join a round
+- both players submit hidden moves
+- the backend resolves the match after both moves are submitted
+- Telegram sends the result to both players
+- the homepage displays the latest resolved game event
+
+New Firestore collections:
+
+- `game_matches`
+- `game_events`
+
+Security model:
+
+- `game_matches` stores hidden in-progress move data and is not publicly readable
+- `game_events` stores resolved public game results and can be read by the homepage
+- all writes still go through backend routes and Firebase Admin SDK
+
+Implemented Telegram player actions:
+
+- `猜拳`
+- `石頭`
+- `剪刀`
+- `布`
+
+New game files:
+
+- `src/types/game.ts`
+- `src/lib/firebase/game.ts`
+- `src/lib/game/rps-service.ts`
+- `src/app/api/game-events/route.ts`
+- `src/components/scene/GameEventPanel.tsx`
+
+Frontend changes:
+
+- the homepage now receives recent game events
+- the client polls `/api/game-events`
+- a `遊戲事件` section displays the latest rock-paper-scissors result
+
 ## Current Capabilities
 
 At the current stage, the project supports:
@@ -454,6 +547,8 @@ At the current stage, the project supports:
 - platform-neutral data fields
 - Telegram adapter modules
 - LINE adapter skeleton
+- production-oriented Firestore rules
+- rock-paper-scissors multiplayer event loop
 
 ## Current Major Files
 
@@ -467,7 +562,9 @@ Important areas of the codebase include:
 - `src/app/api/telegram/webhook/route.ts`
 - `src/app/api/line/webhook/route.ts`
 - `src/app/api/work-log/route.ts`
+- `src/app/api/game-events/route.ts`
 - `src/app/player/[playerId]/page.tsx`
+- `src/components/scene/GameEventPanel.tsx`
 - `src/components/scene/PlayerGallery.tsx`
 - `src/components/scene/SelectedPlayerInfo.tsx`
 - `src/components/scene/WorkLogPanel.tsx`
@@ -478,11 +575,18 @@ Important areas of the codebase include:
 - `src/lib/firebase/work-log.ts`
 - `src/lib/firebase/weather.ts`
 - `src/lib/firebase/knowledge.ts`
+- `src/lib/firebase/actors-client.ts`
+- `src/lib/firebase/weather-client.ts`
 - `src/lib/game/player-service.ts`
+- `src/lib/game/rps-service.ts`
 - `src/lib/game/world-service.ts`
+- `src/lib/firebase/game.ts`
 - `src/lib/platforms/telegram/`
 - `src/lib/platforms/line/`
 - `src/lib/characters/catalog.ts`
+- `firestore.rules`
+- `firebase.json`
+- `.firebaserc`
 
 ## Suggested Next Steps
 
@@ -491,6 +595,9 @@ Possible future directions discussed or implied during development:
 - multiplayer player application and approval flow
 - deeper Telegram-based player management
 - complete LINE Messaging API integration
+- Firebase CLI based rules deployment
+- LINE adapter support for rock-paper-scissors
+- player game statistics and ranking
 - richer player self-service controls
 - manager-controlled player slot management
 - richer world simulation

@@ -3,6 +3,7 @@ import { getActorState } from "@/lib/firebase/actors";
 import { listPlayers } from "@/lib/firebase/players";
 import { listKnowledgeItems } from "@/lib/firebase/knowledge";
 import { listWorkLogs } from "@/lib/firebase/work-log";
+import { listRecentGameEvents } from "@/lib/game/rps-service";
 import { getWeatherSettings } from "@/lib/firebase/weather";
 import { getSceneAssetVersions } from "@/lib/scenes/asset-versions";
 
@@ -24,6 +25,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const weatherSettings = await getWeatherSettings();
   const knowledgePage = await listKnowledgeItems(page, 5);
   const workLogPage = await listWorkLogs(actorState.id, logPage, 5);
+  const gameEvents = await listRecentGameEvents(5);
   const assetVersions = getSceneAssetVersions();
 
   return (
@@ -34,6 +36,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       assetVersions={assetVersions}
       knowledgePage={knowledgePage}
       initialWorkLogPage={workLogPage}
+      initialGameEvents={gameEvents}
     />
   );
 }

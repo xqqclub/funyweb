@@ -1,4 +1,4 @@
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 
 import { getFirebaseClientDb } from "@/lib/firebase/client";
 import { DEFAULT_ACTOR_ID, defaultActorState } from "@/lib/status/mapping";
@@ -41,7 +41,6 @@ export function subscribeToActorState(onChange: (state: ActorState) => void) {
 
   return onSnapshot(actorRef, async (snapshot) => {
     if (!snapshot.exists()) {
-      await setDoc(actorRef, defaultActorState);
       onChange(defaultActorState);
       return;
     }

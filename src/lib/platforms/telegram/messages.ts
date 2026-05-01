@@ -3,6 +3,13 @@ import { characterCatalog } from "@/lib/characters/catalog";
 import { formatActorStateSummary, getAtHomeModeLabel, getStatusLabel } from "@/lib/status/format";
 import type { PlayerApplication } from "@/types/application";
 import type { ActorState } from "@/types/actor";
+import type { GameEvent, GameMatch, RpsMove } from "@/types/game";
+
+const rpsMoveLabels: Record<RpsMove, string> = {
+  rock: "石頭",
+  scissors: "剪刀",
+  paper: "布"
+};
 
 export function getAdminOnlyMessage() {
   return "你目前不在允許的管理者名單中。";
@@ -233,6 +240,64 @@ export function getPlayerStateUpdatedMessage(state: ActorState) {
     "",
     formatActorStateSummary(state)
   ].join("\n");
+}
+
+export function getRpsStartMessage() {
+  return "已進入猜拳。等待另一位玩家加入後，請選擇：石頭、剪刀或布。";
+}
+
+export function getRpsAlreadyWaitingMessage() {
+  return "你已經在猜拳等待中。另一位玩家按下「猜拳」後就會開始。";
+}
+
+export function getRpsJoinedMessage(opponentName: string) {
+  return `已加入和 ${opponentName} 的猜拳。請選擇：石頭、剪刀或布。`;
+}
+
+export function getRpsOpponentJoinedMessage(opponentName: string) {
+  return `${opponentName} 加入了你的猜拳。請選擇：石頭、剪刀或布。`;
+}
+
+export function getRpsMoveSavedMessage(move: RpsMove) {
+  return `你出了${rpsMoveLabels[move]}。等待對方出拳中。`;
+}
+
+export function getRpsWaitingOpponentMessage() {
+  return "目前還在等待對手加入猜拳。";
+}
+
+export function getRpsAlreadyMovedMessage() {
+  return "你已經出拳了，請等待對方。";
+}
+
+export function getRpsNoActiveMatchMessage() {
+  return "目前沒有進行中的猜拳，請先按「猜拳」開局或加入。";
+}
+
+export function getRpsResultMessage(event: GameEvent, viewerId: string) {
+  const opponent = event.players.find((player) => player.playerId !== viewerId);
+  const viewerMove = event.moves[viewerId];
+  const opponentMove = opponent ? event.moves[opponent.playerId] : undefined;
+  const resultText = event.result === "draw" ? "平手" : event.winnerId === viewerId ? "你贏了" : "你輸了";
+
+  return [
+    `猜拳結果：${resultText}`,
+    opponent ? `對手：${opponent.name}` : "",
+    viewerMove ? `你出的是：${rpsMoveLabels[viewerMove]}` : "",
+    opponentMove ? `對方出的是：${rpsMoveLabels[opponentMove]}` : "",
+    "",
+    event.message
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+export function getRpsMatchSummary(match: GameMatch) {
+  if (!match.playerB) {
+    return `${match.playerA.name} 正在等待猜拳對手。`;
+  }
+
+  return `${match.playerA.name} vs ${match.playerB.name}`;
 }
 
 export function getManagerStateUpdatedMessage(result: {

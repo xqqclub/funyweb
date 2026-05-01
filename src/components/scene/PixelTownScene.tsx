@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CSSProperties, useEffect, useMemo, useRef, useState, useTransition } from "react";
 
 import { KnowledgeListPanel } from "@/components/scene/KnowledgeListPanel";
+import { GameEventPanel } from "@/components/scene/GameEventPanel";
 import { PlayerGallery, type PlayerGalleryItem } from "@/components/scene/PlayerGallery";
 import { SelectedPlayerInfo } from "@/components/scene/SelectedPlayerInfo";
 import { WorkLogPanel } from "@/components/scene/WorkLogPanel";
@@ -18,6 +19,7 @@ import { defaultWeatherSettings } from "@/lib/weather/defaults";
 import type { ActorState, ActorStatus, AtHomeMode } from "@/types/actor";
 import type { KnowledgePage } from "@/types/knowledge";
 import type { WorkLogPage } from "@/types/work-log";
+import type { GameEvent } from "@/types/game";
 import type { WeatherSettings } from "@/types/weather";
 
 import styles from "./scene.module.css";
@@ -31,6 +33,7 @@ type SceneProps = {
   assetVersions: Record<string, string>;
   knowledgePage: KnowledgePage;
   initialWorkLogPage: WorkLogPage;
+  initialGameEvents: GameEvent[];
   initialFocusPlayerId?: string;
   sceneMode?: "home" | "player";
 };
@@ -202,6 +205,7 @@ export function PixelTownScene({
   assetVersions,
   knowledgePage,
   initialWorkLogPage,
+  initialGameEvents,
   initialFocusPlayerId,
   sceneMode = "home"
 }: SceneProps) {
@@ -225,6 +229,7 @@ export function PixelTownScene({
   const [weatherSettings, setWeatherSettings] = useState<WeatherSettings>(initialWeatherSettings);
   const [workLogPage, setWorkLogPage] = useState<WorkLogPage>(initialWorkLogPage);
   const [workLogCurrentPage, setWorkLogCurrentPage] = useState(initialWorkLogPage.page);
+  const [gameEvents, setGameEvents] = useState<GameEvent[]>(initialGameEvents);
   const previousStatusRef = useRef<ActorStatus>(initialState.status);
   const audioContextRef = useRef<AudioContext | null>(null);
 
@@ -295,6 +300,38 @@ export function PixelTownScene({
       window.clearInterval(interval);
     };
   }, [selectedPlayerId, workLogCurrentPage]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const syncGameEvents = async () => {
+      try {
+        const response = await fetch("/api/game-events", { cache: "no-store" });
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as { events?: GameEvent[] };
+        if (!payload.events || cancelled) {
+          return;
+        }
+
+        startTransition(() => {
+          setGameEvents(payload.events as GameEvent[]);
+        });
+      } catch {
+        return;
+      }
+    };
+
+    syncGameEvents();
+    const interval = window.setInterval(syncGameEvents, 4000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -1184,6 +1221,10 @@ export function PixelTownScene({
                 </div>
               </div>
             </div>
+
+            {!isPlayerScene ? (
+              <GameEventPanel events={gameEvents} toLocalTime={toLocalTime} />
+            ) : null}
 
             {!isPlayerScene ? (
               <WorkLogPanel

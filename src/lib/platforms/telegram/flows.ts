@@ -8,11 +8,13 @@ import { clearTelegramPendingAction, setTelegramPendingAction } from "@/lib/fire
 import {
   clearSpeechForTarget,
   getApplicationStatusLabel,
+  getApprovedPlayerProfile,
   reviewPlayerApplication,
   saveSpeechForTarget,
   submitPlayerApplication,
   updateApprovedPlayerStatus
 } from "@/lib/game/player-service";
+import { startOrJoinRpsMatch, submitRpsMove } from "@/lib/game/rps-service";
 import {
   announcementSpeechOptions,
   commandMap,
@@ -27,6 +29,7 @@ import {
   getTelegramPlayerKeyboard,
   isReservedTelegramText,
   presetSpeechOptions,
+  rpsMoveMap,
   weatherCommandMap,
   type TelegramReplyMarkup
 } from "@/lib/platforms/telegram/ui";
@@ -57,6 +60,15 @@ import {
   getPlayersListMessage,
   getReviewFailedMessage,
   getReviewResultMessage,
+  getRpsAlreadyMovedMessage,
+  getRpsAlreadyWaitingMessage,
+  getRpsJoinedMessage,
+  getRpsMoveSavedMessage,
+  getRpsNoActiveMatchMessage,
+  getRpsOpponentJoinedMessage,
+  getRpsResultMessage,
+  getRpsStartMessage,
+  getRpsWaitingOpponentMessage,
   getSpeechAnnouncementPrompt,
   getSpeechClearedMessage,
   getSpeechControlsMessage,
@@ -279,6 +291,76 @@ export async function handleTelegramPlayerFlow(ctx: TelegramFlowContext) {
     await saveSpeechForTarget(userId, false, nextSpeech, "custom", `telegram:${userId}`);
     await deps.sendTelegramMessage(chatId, getSpeechSavedMessage("custom", nextSpeech), playerKeyboard);
     return { handled: true, response: NextResponse.json({ ok: true, action: "speech_custom_saved" }) };
+  }
+
+  if (text === "猜拳") {
+    if (!isApprovedPlayer) {
+      await deps.sendTelegramMessage(chatId, getPlayerNotApprovedStateMessage(), playerKeyboard);
+      return { handled: true, response: NextResponse.json({ ok: false, error: "not_approved" }, { status: 403 }) };
+    }
+
+    const result = await startOrJoinRpsMatch(userId);
+    if (!result.ok) {
+      await deps.sendTelegramMessage(chatId, getPlayerStateUpdateFailedMessage(), playerKeyboard);
+      return { handled: true, response: NextResponse.json({ ok: false, error: result.reason }, { status: 500 }) };
+    }
+
+    if (result.action === "created") {
+      await deps.sendTelegramMessage(chatId, getRpsStartMessage(), playerKeyboard);
+    } else if (result.action === "waiting") {
+      await deps.sendTelegramMessage(chatId, getRpsAlreadyWaitingMessage(), playerKeyboard);
+    } else {
+      await deps.sendTelegramMessage(chatId, getRpsJoinedMessage(result.opponent?.name ?? "對手"), playerKeyboard);
+
+      if (result.opponent?.platform === "telegram") {
+        const opponentProfile = await getApprovedPlayerProfile(result.opponent.playerId);
+        await deps.sendTelegramMessage(
+          Number(result.opponent.platformUserId),
+          getRpsOpponentJoinedMessage(result.participant.name),
+          getPlayerKeyboardForProfile(true, opponentProfile)
+        );
+      }
+    }
+
+    return { handled: true, response: NextResponse.json({ ok: true, action: "rps_start", result }) };
+  }
+
+  const rpsMove = rpsMoveMap[text];
+  if (rpsMove) {
+    if (!isApprovedPlayer) {
+      await deps.sendTelegramMessage(chatId, getPlayerNotApprovedStateMessage(), playerKeyboard);
+      return { handled: true, response: NextResponse.json({ ok: false, error: "not_approved" }, { status: 403 }) };
+    }
+
+    const result = await submitRpsMove(userId, rpsMove);
+    if (!result.ok) {
+      const message =
+        result.reason === "waiting_for_opponent"
+          ? getRpsWaitingOpponentMessage()
+          : result.reason === "move_already_submitted"
+            ? getRpsAlreadyMovedMessage()
+            : getRpsNoActiveMatchMessage();
+      await deps.sendTelegramMessage(chatId, message, playerKeyboard);
+      return { handled: true, response: NextResponse.json({ ok: false, action: "rps_move_rejected", reason: result.reason }) };
+    }
+
+    if (result.action === "move_saved") {
+      await deps.sendTelegramMessage(chatId, getRpsMoveSavedMessage(result.move), playerKeyboard);
+      return { handled: true, response: NextResponse.json({ ok: true, action: "rps_move_saved" }) };
+    }
+
+    if (result.event) {
+      await Promise.all(
+        result.event.players
+          .filter((player) => player.platform === "telegram")
+          .map(async (player) => {
+            const profile = await getApprovedPlayerProfile(player.playerId);
+            await deps.sendTelegramMessage(Number(player.platformUserId), getRpsResultMessage(result.event!, player.playerId), getPlayerKeyboardForProfile(true, profile));
+          })
+      );
+    }
+
+    return { handled: true, response: NextResponse.json({ ok: true, action: "rps_resolved", event: result.event }) };
   }
 
   const profileCommand = getCharacterCommandTargetForProfile(text, playerProfile);

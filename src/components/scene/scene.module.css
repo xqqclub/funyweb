@@ -74,7 +74,8 @@
 .infoPanel,
 .adminCard,
 .knowledgeCard,
-.workLogCard {
+.workLogCard,
+.gameEventCard {
   background: linear-gradient(180deg, rgba(11, 27, 38, 0.9), rgba(8, 18, 26, 0.84));
   border: 1px solid rgba(148, 198, 214, 0.14);
   border-radius: 30px;
@@ -99,7 +100,8 @@
 .infoPanel::before,
 .adminCard::before,
 .knowledgeCard::before,
-.workLogCard::before {
+.workLogCard::before,
+.gameEventCard::before {
   content: "";
   position: absolute;
   inset: 1px;
@@ -1228,6 +1230,111 @@
   overflow-wrap: anywhere;
 }
 
+.gameEventCard {
+  position: relative;
+  padding: 22px;
+  display: grid;
+  gap: 18px;
+  color: #edf8fb;
+}
+
+.gameEventHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(220px, 0.9fr);
+  gap: 16px;
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 230, 163, 0.12), rgba(122, 255, 183, 0.06));
+  border: 1px solid rgba(255, 224, 129, 0.16);
+}
+
+.gameEventHero[data-result="draw"] {
+  background: linear-gradient(180deg, rgba(148, 198, 214, 0.12), rgba(148, 198, 214, 0.05));
+  border-color: rgba(148, 198, 214, 0.16);
+}
+
+.gameEventHero strong {
+  display: block;
+  margin-top: 8px;
+  color: #f8fffb;
+  font-size: 1.3rem;
+}
+
+.gameEventHero p {
+  margin: 8px 0 0;
+  color: rgba(230, 245, 248, 0.82);
+  line-height: 1.55;
+}
+
+.gameEventTag {
+  display: inline-flex;
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 224, 129, 0.14);
+  border: 1px solid rgba(255, 224, 129, 0.18);
+  color: #fff6d3;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.gameMoveGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gameMoveTile {
+  min-width: 0;
+  padding: 13px;
+  border-radius: 16px;
+  background: rgba(8, 18, 27, 0.5);
+  border: 1px solid rgba(148, 198, 214, 0.12);
+}
+
+.gameMoveTile[data-winner="true"] {
+  border-color: rgba(122, 255, 183, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(122, 255, 183, 0.08);
+}
+
+.gameMoveTile span,
+.gameEventRow span {
+  display: block;
+  color: rgba(214, 233, 237, 0.7);
+  font-size: 0.74rem;
+}
+
+.gameMoveTile strong {
+  margin-top: 5px;
+  font-size: 1.12rem;
+}
+
+.gameEventList {
+  display: grid;
+  gap: 10px;
+}
+
+.gameEventRow {
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(237, 253, 255, 0.06), rgba(237, 253, 255, 0.03));
+  border: 1px solid rgba(148, 198, 214, 0.1);
+}
+
+.gameEventRow strong {
+  display: block;
+  margin-top: 5px;
+  color: #f3fffc;
+}
+
+.gameEventRow p {
+  margin: 5px 0 0;
+  color: rgba(214, 233, 237, 0.78);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 .knowledgePageLink,
 .knowledgePageLinkDisabled {
   padding: 9px 12px;
@@ -2050,7 +2157,8 @@
   .adminCard,
   .playerDeck,
   .knowledgeCard,
-  .workLogCard {
+  .workLogCard,
+  .gameEventCard {
     border-radius: 24px;
   }
 
@@ -2062,7 +2170,8 @@
   .adminCard,
   .playerDeck,
   .knowledgeCard,
-  .workLogCard {
+  .workLogCard,
+  .gameEventCard {
     padding: 18px;
   }
 
@@ -2103,8 +2212,14 @@
   .eventCard,
   .knowledgeRow,
   .knowledgeEmpty,
-  .workLogRow {
+  .workLogRow,
+  .gameEventHero,
+  .gameEventRow {
     padding: 14px;
+  }
+
+  .gameEventHero {
+    grid-template-columns: 1fr;
   }
 
   .dockCard,
@@ -2260,6 +2375,10 @@
   .knowledgeRow {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .gameMoveGrid {
+    grid-template-columns: 1fr;
   }
 
   .workLogRow {

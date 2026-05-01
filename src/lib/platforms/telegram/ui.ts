@@ -1,4 +1,5 @@
 import type { ActorStatus, AtHomeMode, CharacterGender } from "@/types/actor";
+import type { RpsMove } from "@/types/game";
 import type { WeatherMode } from "@/types/weather";
 import {
   characterCatalog,
@@ -77,6 +78,11 @@ export const weatherCommandMap: Record<string, WeatherCommandTarget> = {
 export const presetSpeechOptions = ["我回來了", "今天努力工作", "先休息一下", "正在整理房間"] as const;
 export const emojiSpeechOptions = ["😀", "😴", "📚", "🎮", "🚲", "🧹"] as const;
 export const announcementSpeechOptions = ["任務完成", "剛下班", "開始追劇", "今天下雨"] as const;
+export const rpsMoveMap: Record<string, RpsMove> = {
+  "石頭": "rock",
+  "剪刀": "scissors",
+  "布": "paper"
+};
 
 export function getTelegramControlKeyboard(): TelegramReplyMarkup {
   return {
@@ -103,6 +109,8 @@ export function getTelegramPlayerKeyboard(approved = false): TelegramReplyMarkup
   const keyboard: Array<Array<{ text: string }>> = [[{ text: "申請加入遊戲" }, { text: "查看申請狀態" }], [{ text: "進入遊戲" }]];
 
   if (approved) {
+    keyboard.push([{ text: "猜拳" }]);
+    keyboard.push([{ text: "石頭" }, { text: "剪刀" }, { text: "布" }]);
     keyboard.push([{ text: "說話" }, { text: "刪除對話" }]);
     keyboard.push([{ text: "預設台詞" }, { text: "表情符號" }, { text: "短暫公告" }]);
   }
@@ -132,6 +140,8 @@ export function buildTelegramPlayerKeyboard(rows: string[][]): TelegramReplyMark
       [{ text: "申請加入遊戲" }, { text: "查看申請狀態" }],
       [{ text: "進入遊戲" }],
       ...rows.map((row) => row.map((text) => ({ text }))),
+      [{ text: "猜拳" }],
+      [{ text: "石頭" }, { text: "剪刀" }, { text: "布" }],
       [{ text: "說話" }, { text: "刪除對話" }],
       [{ text: "預設台詞" }, { text: "表情符號" }, { text: "短暫公告" }]
     ],
@@ -242,6 +252,10 @@ export function isReservedTelegramText(text: string) {
       "/players",
       "/characters",
       "角色樣式列表",
+      "猜拳",
+      "石頭",
+      "剪刀",
+      "布",
       "/weatherstatus",
       "目前天氣模式",
       "說話",
