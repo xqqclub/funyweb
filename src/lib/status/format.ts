@@ -44,6 +44,7 @@ export function formatTelegramHelp() {
     "說話 - 輸入一句顯示在角色旁邊的文字",
     "預設台詞 / 表情符號 / 短暫公告 - 快速更新角色泡泡",
     "刪除對話 - 清除目前對話泡泡",
+    "猜拳 / 石頭 / 剪刀 / 布 - 玩家對戰測試按鈕",
     "/weatherstatus - 查看目前天氣模式",
     "/weatherauto - 切換為自動依台中天氣",
     "/weatherrain - 切換為手動雨天"
@@ -61,6 +62,8 @@ export function formatTelegramPlayerHelp() {
     "可用按鈕：",
     "申請加入遊戲",
     "查看申請狀態",
-    "進入遊戲"
+    "進入遊戲",
+    "猜拳",
+    "石頭 / 剪刀 / 布"
   ].join("\n");
 }

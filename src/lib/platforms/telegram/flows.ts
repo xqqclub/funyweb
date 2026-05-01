@@ -407,9 +407,14 @@ export async function handleTelegramAdminFlow(
     return { handled: true, response: NextResponse.json({ ok: true, action: "status", state: result }) };
   }
 
-  if (text === "角色狀態" || text === "天氣控制") {
+  if (text === "角色狀態" || text === "天氣控制" || text === "遊戲控制") {
     await deps.sendTelegramMessage(chatId, getKeyboardSectionMessage(), getTelegramControlKeyboard());
     return { handled: true, response: NextResponse.json({ ok: true, action: "keyboard_section" }) };
+  }
+
+  if (text === "猜拳" || rpsMoveMap[text]) {
+    await deps.sendTelegramMessage(chatId, "猜拳按鈕已顯示在鍵盤中。實際對戰請用已通過審核的玩家帳號操作；管理者帳號目前主要負責審核、知識列表與世界控制。", getTelegramControlKeyboard());
+    return { handled: true, response: NextResponse.json({ ok: true, action: "manager_game_hint" }) };
   }
 
   if (text === "對話控制") {

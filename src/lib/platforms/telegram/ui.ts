@@ -97,6 +97,9 @@ export function getTelegramControlKeyboard(): TelegramReplyMarkup {
       [{ text: "對話控制" }],
       [{ text: "說話" }, { text: "刪除對話" }],
       [{ text: "預設台詞" }, { text: "表情符號" }, { text: "短暫公告" }],
+      [{ text: "遊戲控制" }],
+      [{ text: "猜拳" }],
+      [{ text: "石頭" }, { text: "剪刀" }, { text: "布" }],
       [{ text: "天氣控制" }],
       [{ text: "自動天氣" }, { text: "手動雨天" }]
     ],
@@ -127,6 +130,8 @@ export function getTelegramAdminPreviewKeyboard(): TelegramReplyMarkup {
     keyboard: [
       [{ text: "申請加入遊戲" }, { text: "查看申請狀態" }],
       [{ text: "進入遊戲" }],
+      [{ text: "猜拳" }],
+      [{ text: "石頭" }, { text: "剪刀" }, { text: "布" }],
       [{ text: "切回管理者畫面" }]
     ],
     resize_keyboard: true,
