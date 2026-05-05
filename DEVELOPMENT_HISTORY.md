@@ -560,6 +560,18 @@ New main character image assets:
 - `public/scenes/shared/characters/主角-在家吃飯.png`
 - `public/scenes/shared/characters/主角-沉思.png`
 
+## Phase 21: Pre-Commit Rock-Paper-Scissors Moves
+
+The rock-paper-scissors game loop was adjusted so a player no longer needs to wait for an opponent before choosing a move.
+
+Updated gameplay:
+
+- a player can press `石頭` / `剪刀` / `布` before anyone joins
+- the move creates a waiting match and is stored privately in `game_matches`
+- another player can press `猜拳` to join and then choose a move
+- another player can also directly press `石頭` / `剪刀` / `布` to join the waiting match and resolve immediately
+- once both sides have moves, the match resolves and writes a public `game_events` result
+
 ## Current Capabilities
 
 At the current stage, the project supports:
@@ -584,6 +596,7 @@ At the current stage, the project supports:
 - production-oriented Firestore rules
 - rock-paper-scissors multiplayer event loop
 - manager account participation in rock-paper-scissors
+- pre-committed rock-paper-scissors moves before opponent join
 - expanded main character states for eating, field work, shopping, and thinking
 
 ## Current Major Files

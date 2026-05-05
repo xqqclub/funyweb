@@ -243,11 +243,11 @@ export function getPlayerStateUpdatedMessage(state: ActorState) {
 }
 
 export function getRpsStartMessage() {
-  return "已進入猜拳。等待另一位玩家加入後，請選擇：石頭、剪刀或布。";
+  return "已進入猜拳。你可以先選擇石頭、剪刀或布；對手加入並出拳後就會立刻判定勝負。";
 }
 
 export function getRpsAlreadyWaitingMessage() {
-  return "你已經在猜拳等待中。另一位玩家按下「猜拳」後就會開始。";
+  return "你已經在猜拳等待中。若還沒出拳，可以先選擇石頭、剪刀或布。";
 }
 
 export function getRpsJoinedMessage(opponentName: string) {
@@ -259,11 +259,11 @@ export function getRpsOpponentJoinedMessage(opponentName: string) {
 }
 
 export function getRpsMoveSavedMessage(move: RpsMove) {
-  return `你出了${rpsMoveLabels[move]}。等待對方出拳中。`;
+  return `你出了${rpsMoveLabels[move]}。已先記錄，等待對手加入或出拳。`;
 }
 
 export function getRpsWaitingOpponentMessage() {
-  return "目前還在等待對手加入猜拳。";
+  return "目前還在等待對手加入猜拳。你可以先出拳，系統會幫你保留。";
 }
 
 export function getRpsAlreadyMovedMessage() {
@@ -271,7 +271,7 @@ export function getRpsAlreadyMovedMessage() {
 }
 
 export function getRpsNoActiveMatchMessage() {
-  return "目前沒有進行中的猜拳，請先按「猜拳」開局或加入。";
+  return "目前沒有進行中的猜拳；你也可以直接按石頭、剪刀或布先出拳排隊。";
 }
 
 export function getRpsResultMessage(event: GameEvent, viewerId: string) {

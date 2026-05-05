@@ -444,7 +444,7 @@ export async function handleTelegramAdminFlow(
 
   const managerRpsMove = rpsMoveMap[text];
   if (managerRpsMove) {
-    const result = await submitRpsMove(userId, managerRpsMove);
+    const result = await submitRpsMove(userId, managerRpsMove, buildTelegramManagerRpsParticipant(userId));
     const managerKeyboard = getTelegramControlKeyboard();
 
     if (!result.ok) {

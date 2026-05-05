@@ -83,6 +83,48 @@ function buildResultMessage(match: GameMatch, winnerId: string | null) {
   return `${match.playerA.name} 出了${moveA}，${match.playerB.name} 出了${moveB}，${winner.name} 勝利。`;
 }
 
+async function resolveCompletedMatch(nextMatch: GameMatch, move: RpsMove, now: string) {
+  const playerB = nextMatch.playerB;
+  const playerAMove = nextMatch.playerAMove;
+  const playerBMove = nextMatch.playerBMove;
+  if (!playerB || !playerAMove || !playerBMove) {
+    return { ok: false as const, reason: "match_not_ready", match: nextMatch };
+  }
+
+  const winnerId = resolveWinner(nextMatch);
+  const resolvedMatch: GameMatch = {
+    ...nextMatch,
+    status: "resolved",
+    winnerId,
+    resolvedAt: now,
+    updatedAt: now
+  };
+  await saveGameMatch(resolvedMatch);
+
+  const eventResult = await createGameEvent({
+    type: "rps_result",
+    title: winnerId ? "猜拳勝負已分" : "猜拳平手",
+    message: buildResultMessage(resolvedMatch, winnerId),
+    playerIds: [resolvedMatch.playerA.playerId, playerB.playerId],
+    players: [resolvedMatch.playerA, playerB],
+    result: winnerId ? "win" : "draw",
+    winnerId,
+    moves: {
+      [resolvedMatch.playerA.playerId]: playerAMove,
+      [playerB.playerId]: playerBMove
+    },
+    createdAt: now
+  });
+
+  return {
+    ok: true as const,
+    action: "resolved" as const,
+    match: resolvedMatch,
+    move,
+    event: eventResult.ok ? eventResult.event : null
+  };
+}
+
 export async function startOrJoinRpsMatch(playerId: string, fallbackParticipant?: GameParticipant) {
   const player = await getPlayerById(playerId);
   if (!player && !fallbackParticipant) {
@@ -148,23 +190,68 @@ export async function startOrJoinRpsMatch(playerId: string, fallbackParticipant?
   };
 }
 
-export async function submitRpsMove(playerId: string, move: RpsMove) {
+export async function submitRpsMove(playerId: string, move: RpsMove, fallbackParticipant?: GameParticipant) {
+  const player = await getPlayerById(playerId);
+  const participant = player ? toParticipant(player) : fallbackParticipant;
   const openMatches = await listOpenRpsMatches();
   const match = openMatches.find((item) => item.playerA.playerId === playerId || item.playerB?.playerId === playerId);
+  const now = new Date().toISOString();
 
   if (!match) {
-    return { ok: false as const, reason: "match_not_found" };
-  }
+    if (!participant) {
+      return { ok: false as const, reason: "match_not_found" };
+    }
 
-  if (match.status === "waiting" || !match.playerB) {
-    return { ok: false as const, reason: "waiting_for_opponent", match };
+    const waitingMatch = openMatches.find((item) => item.status === "waiting" && item.playerA.playerId !== playerId);
+    if (waitingMatch) {
+      const nextMatch: GameMatch = {
+        ...waitingMatch,
+        status: "active",
+        playerB: participant,
+        playerBMove: move,
+        updatedAt: now
+      };
+
+      if (nextMatch.playerAMove) {
+        return resolveCompletedMatch(nextMatch, move, now);
+      }
+
+      await saveGameMatch(nextMatch);
+      return {
+        ok: true as const,
+        action: "move_saved" as const,
+        match: nextMatch,
+        move
+      };
+    }
+
+    const nextMatch: GameMatch = {
+      id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `rps-${Date.now()}-${playerId}`,
+      type: "rock_paper_scissors",
+      status: "waiting",
+      playerA: participant,
+      playerAMove: move,
+      createdAt: now,
+      updatedAt: now
+    };
+
+    const result = await createGameMatch(nextMatch);
+    if (!result.ok) {
+      return { ok: false as const, reason: result.reason };
+    }
+
+    return {
+      ok: true as const,
+      action: "move_saved" as const,
+      match: nextMatch,
+      move
+    };
   }
 
   if (getMoveForPlayer(match, playerId)) {
     return { ok: false as const, reason: "move_already_submitted", match };
   }
 
-  const now = new Date().toISOString();
   const nextMatch: GameMatch =
     match.playerA.playerId === playerId
       ? { ...match, playerAMove: move, updatedAt: now }
@@ -174,51 +261,13 @@ export async function submitRpsMove(playerId: string, move: RpsMove) {
     await saveGameMatch(nextMatch);
     return {
       ok: true as const,
-      action: "move_saved",
+      action: "move_saved" as const,
       match: nextMatch,
       move
     };
   }
 
-  const playerB = nextMatch.playerB;
-  const playerAMove = nextMatch.playerAMove;
-  const playerBMove = nextMatch.playerBMove;
-  if (!playerB || !playerAMove || !playerBMove) {
-    return { ok: false as const, reason: "match_not_ready", match: nextMatch };
-  }
-
-  const winnerId = resolveWinner(nextMatch);
-  const resolvedMatch: GameMatch = {
-    ...nextMatch,
-    status: "resolved",
-    winnerId,
-    resolvedAt: now,
-    updatedAt: now
-  };
-  await saveGameMatch(resolvedMatch);
-
-  const eventResult = await createGameEvent({
-    type: "rps_result",
-    title: winnerId ? "猜拳勝負已分" : "猜拳平手",
-    message: buildResultMessage(resolvedMatch, winnerId),
-    playerIds: [resolvedMatch.playerA.playerId, playerB.playerId],
-    players: [resolvedMatch.playerA, playerB],
-    result: winnerId ? "win" : "draw",
-    winnerId,
-    moves: {
-      [resolvedMatch.playerA.playerId]: playerAMove,
-      [playerB.playerId]: playerBMove
-    },
-    createdAt: now
-  });
-
-  return {
-    ok: true as const,
-    action: "resolved",
-    match: resolvedMatch,
-    move,
-    event: eventResult.ok ? eventResult.event : null
-  };
+  return resolveCompletedMatch(nextMatch, move, now);
 }
 
 export async function getRpsMatchForPlayer(playerId: string) {
