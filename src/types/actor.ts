@@ -1,4 +1,14 @@
-export type ActorStatus = "working" | "going_home" | "cleaning" | "sleeping" | "biking" | "at_home";
+export type ActorStatus =
+  | "working"
+  | "company_eating"
+  | "field_work"
+  | "going_home"
+  | "shopping"
+  | "cleaning"
+  | "sleeping"
+  | "biking"
+  | "thinking"
+  | "at_home";
 export type AtHomeMode = "idle" | "gaming" | "streaming" | "reading" | "thinking" | "eating" | "cooking" | "gardening";
 export type CharacterGender = "male" | "female";
 export type SpeechType = "custom" | "preset" | "emoji" | "announcement";

@@ -8,8 +8,8 @@ import { atHomeModeMeta, statusMeta } from "@/lib/status/mapping";
 import type { ActorStatus, AtHomeMode } from "@/types/actor";
 import type { WeatherMode } from "@/types/weather";
 
-const statuses: ActorStatus[] = ["working", "going_home", "biking", "cleaning", "sleeping", "at_home"];
-const atHomeModes: AtHomeMode[] = ["idle", "gaming", "streaming", "reading"];
+const statuses: ActorStatus[] = ["working", "company_eating", "field_work", "going_home", "biking", "shopping", "cleaning", "sleeping", "thinking", "at_home"];
+const atHomeModes: AtHomeMode[] = ["idle", "gaming", "streaming", "reading", "eating", "thinking"];
 
 export default function AdminPage() {
   const [selectedStatus, setSelectedStatus] = useState<ActorStatus>("working");

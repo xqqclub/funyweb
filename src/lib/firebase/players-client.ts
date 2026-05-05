@@ -7,7 +7,18 @@ import type { ActorState, ActorStatus, AtHomeMode, CharacterGender, PlayerLobbyS
 const COLLECTION_NAME = "players";
 
 function isActorStatus(value: unknown): value is ActorStatus {
-  return value === "working" || value === "going_home" || value === "cleaning" || value === "sleeping" || value === "biking" || value === "at_home";
+  return (
+    value === "working" ||
+    value === "company_eating" ||
+    value === "field_work" ||
+    value === "going_home" ||
+    value === "shopping" ||
+    value === "cleaning" ||
+    value === "sleeping" ||
+    value === "biking" ||
+    value === "thinking" ||
+    value === "at_home"
+  );
 }
 
 function isAtHomeMode(value: unknown): value is AtHomeMode {

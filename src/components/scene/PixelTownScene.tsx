@@ -24,7 +24,18 @@ import type { WeatherSettings } from "@/types/weather";
 
 import styles from "./scene.module.css";
 
-const statusOrder: ActorStatus[] = ["working", "going_home", "biking", "cleaning", "sleeping", "at_home"];
+const statusOrder: ActorStatus[] = [
+  "working",
+  "company_eating",
+  "field_work",
+  "going_home",
+  "biking",
+  "shopping",
+  "cleaning",
+  "sleeping",
+  "thinking",
+  "at_home"
+];
 
 type SceneProps = {
   initialState: ActorState;
@@ -80,28 +91,40 @@ const playerPermissions = {
 
 const playerStoryByStatus: Record<ActorStatus, string> = {
   working: "玩家正在辦公區專注工作，小卡以背景與狀態圖快速呈現。",
+  company_eating: "玩家正在公司用餐，小卡呈現短暫補給的工作日常。",
+  field_work: "玩家正在外出工作，小卡維持辦公區背景與任務感。",
   going_home: "玩家正在返家途中，小卡只保留道路背景與步行狀態。",
+  shopping: "玩家正在買東西，小卡呈現住家附近的生活補給感。",
   biking: "玩家正騎車移動，小卡畫面會保持更動態的節奏。",
   cleaning: "玩家正在整理居家空間，畫面聚焦在角色與住宅背景。",
   sleeping: "玩家目前睡覺中，小卡會優先呈現角色休息狀態。",
+  thinking: "玩家正在沉思，小卡依所在區域呈現公司或住家的安靜節奏。",
   at_home: "玩家目前留在家中，主體是角色圖，背景只作為陪襯。"
 };
 
 const playerObjectiveByStatus: Record<ActorStatus, string> = {
   working: "維持今日輸出與工作節奏。",
+  company_eating: "補充體力，準備回到下一段工作節奏。",
+  field_work: "外出處理任務，維持行動中的工作效率。",
   going_home: "沿主要道路返家，畫面以通勤節奏為主。",
+  shopping: "完成日常採買，補充生活所需。",
   biking: "保持穩定移動狀態，切換外出型場景。",
   cleaning: "整理住家區域，讓生活值與整潔度恢復穩定。",
   sleeping: "恢復體力與生活值，保持安靜休息節奏。",
+  thinking: "暫停行動整理思緒，等待下一個決策。",
   at_home: "保持居家狀態，等待下一次玩家操作。"
 };
 
 const playerQueueByStatus: Record<ActorStatus, string[]> = {
   working: ["更新自己的狀態", "等待主管理者推送事件", "同步個人任務進度"],
+  company_eating: ["顯示公司用餐狀態", "維持辦公區背景", "等待下一次個人操作"],
+  field_work: ["切換外出工作狀態", "維持任務感背景", "等待下一次個人操作"],
   going_home: ["更新回家中狀態", "顯示道路背景", "等待下一次個人操作"],
+  shopping: ["顯示買東西狀態", "切換生活補給氛圍", "等待下一次個人操作"],
   biking: ["維持騎車狀態", "更新移動中節奏", "等待下一次個人操作"],
   cleaning: ["顯示打掃狀態圖", "同步住宅區氛圍", "等待下一次個人操作"],
   sleeping: ["維持睡眠狀態", "降低場景節奏", "等待玩家下一次更新"],
+  thinking: ["切換沉思狀態", "保留目前區域背景", "等待下一次個人操作"],
   at_home: ["更新在家子狀態", "切換對應狀態圖", "等待主管理者的世界事件"]
 };
 
@@ -548,18 +571,26 @@ export function PixelTownScene({
   const timePhase = useMemo(() => getTimePhase(currentDateTime.getHours()), [currentDateTime]);
   const objectiveByStatus: Record<ActorStatus, string> = {
     working: "完成辦公區任務巡檢，維持今日輸出節奏。",
+    company_eating: "在公司用餐補充體力，準備銜接下一段工作。",
+    field_work: "外出處理工作任務，讓城市行動線維持運作。",
     going_home: "沿主要道路返家，避開尖峰時段的人流。",
+    shopping: "在住家附近完成採買，補充日常生活資源。",
     biking: "騎車在城鎮之間移動，保持穩定的外出節奏。",
     cleaning: "整理住家區域，讓生活值恢復到穩定狀態。",
     sleeping: "進入休息狀態，讓主角恢復體力與生活值。",
+    thinking: "暫停動作並整理思緒，保留目前區域的氛圍。",
     at_home: "留在家中待命，保持安靜且穩定的居家節奏。"
   };
   const queueByStatus: Record<ActorStatus, string[]> = {
     working: ["整理辦公桌任務", "確認樓層能源燈號", "同步管理者排程"],
+    company_eating: ["切換公司用餐狀態", "維持辦公區背景", "補充主角體力"],
+    field_work: ["切換外出工作狀態", "維持城市任務感", "等待下一次管理指令"],
     going_home: ["更新通勤動畫", "切換住宅燈光", "讓 NPC 避開主角路徑"],
+    shopping: ["切換買東西畫面", "維持生活補給氛圍", "等待下一次管理指令"],
     biking: ["維持騎車狀態", "更新外出節奏", "切換移動中場景語氣"],
     cleaning: ["顯示掃除特效", "提高住宅整潔度", "準備下一個待辦狀態"],
     sleeping: ["降低場景節奏", "切換安靜氛圍", "維持休息中的狀態"],
+    thinking: ["切換沉思畫面", "保留目前區域背景", "等待下一次管理指令"],
     at_home: ["保持待機站姿", "顯示居家狀態", "等待下一次管理指令"]
   };
   const zoneLabel: Record<string, string> = {
@@ -615,23 +646,42 @@ export function PixelTownScene({
   const backgroundPathByStatus: Record<ActorStatus, (mode: ViewportMode, segment: "day" | "night", raining: boolean) => string> = {
     working: (mode, segment, raining) =>
       raining ? `/scenes/${mode}/backgrounds/city-office-${segment}-rain.png` : `/scenes/${mode}/backgrounds/city-office-${segment}.png`,
+    company_eating: (mode, segment, raining) =>
+      raining ? `/scenes/${mode}/backgrounds/city-office-${segment}-rain.png` : `/scenes/${mode}/backgrounds/city-office-${segment}.png`,
+    field_work: (mode, segment, raining) =>
+      raining ? `/scenes/${mode}/backgrounds/city-office-${segment}-rain.png` : `/scenes/${mode}/backgrounds/city-office-${segment}.png`,
     going_home: (mode, segment, raining) =>
       raining ? `/scenes/${mode}/backgrounds/road/road-${segment}-rain.png` : `/scenes/${mode}/backgrounds/road/road-${segment}.png`,
     biking: (mode, segment, raining) =>
       raining ? `/scenes/${mode}/backgrounds/road/road-${segment}-rain.png` : `/scenes/${mode}/backgrounds/road/road-${segment}.png`,
+    shopping: (mode, segment, raining) =>
+      raining ? `/scenes/${mode}/backgrounds/home-${segment}-rain.png` : `/scenes/${mode}/backgrounds/forest-home-${segment}.png`,
     cleaning: (mode, segment, raining) =>
       raining ? `/scenes/${mode}/backgrounds/home-${segment}-rain.png` : `/scenes/${mode}/backgrounds/forest-home-${segment}.png`,
     sleeping: (mode, segment, raining) =>
       raining ? `/scenes/${mode}/backgrounds/home-${segment}-rain.png` : `/scenes/${mode}/backgrounds/forest-home-${segment}.png`,
+    thinking: (mode, segment, raining) =>
+      raining ? `/scenes/${mode}/backgrounds/home-${segment}-rain.png` : `/scenes/${mode}/backgrounds/forest-home-${segment}.png`,
     at_home: (mode, segment, raining) =>
       raining ? `/scenes/${mode}/backgrounds/home-${segment}-rain.png` : `/scenes/${mode}/backgrounds/forest-home-${segment}.png`
   };
+  const getBackgroundPath = (player: Pick<ActorState, "status" | "location">, mode: ViewportMode, segment: "day" | "night", raining: boolean) => {
+    if (player.status === "thinking" && player.location === "office") {
+      return raining ? `/scenes/${mode}/backgrounds/city-office-${segment}-rain.png` : `/scenes/${mode}/backgrounds/city-office-${segment}.png`;
+    }
+
+    return backgroundPathByStatus[player.status](mode, segment, raining);
+  };
   const characterAssetByStatus: Record<ActorStatus, string> = {
     working: "/scenes/shared/characters/main-working.png",
+    company_eating: "/scenes/shared/characters/主角-公司吃飯.png",
+    field_work: "/scenes/shared/characters/主角-外出工作.png",
     going_home: "/scenes/shared/characters/main-going-home.png",
     biking: "/scenes/shared/characters/main-going-home.png",
+    shopping: "/scenes/shared/characters/主角-買東西.png",
     cleaning: "/scenes/shared/characters/main-cleaning.png",
     sleeping: "/scenes/shared/characters/睡覺.png",
+    thinking: "/scenes/shared/characters/主角-沉思.png",
     at_home: "/scenes/shared/characters/at-home-idle.png"
   };
   const atHomeCharacterAssetByMode = {
@@ -639,23 +689,35 @@ export function PixelTownScene({
     gaming: "/scenes/shared/characters/at-home-gaming.png",
     streaming: "/scenes/shared/characters/at-home-streaming.png",
     reading: "/scenes/shared/characters/at-home-reading.png",
-    thinking: "/scenes/shared/characters/at-home-idle.png",
-    eating: "/scenes/shared/characters/at-home-idle.png",
+    thinking: "/scenes/shared/characters/主角-沉思.png",
+    eating: "/scenes/shared/characters/主角-在家吃飯.png",
     cooking: "/scenes/shared/characters/at-home-idle.png",
     gardening: "/scenes/shared/characters/at-home-idle.png"
   } as const;
   const characterWidthByStatus: Record<ActorStatus, { desktop: number; mobile: number }> = {
     working: { desktop: 34, mobile: 74 },
+    company_eating: { desktop: 34, mobile: 76 },
+    field_work: { desktop: 35, mobile: 78 },
     going_home: { desktop: 18, mobile: 50 },
     biking: { desktop: 28, mobile: 64 },
+    shopping: { desktop: 34, mobile: 76 },
     cleaning: { desktop: 38, mobile: 78 },
     sleeping: { desktop: 31, mobile: 72 },
+    thinking: { desktop: 33, mobile: 74 },
     at_home: { desktop: 18, mobile: 48 }
   };
   const characterPlacementByStatus: Record<ActorStatus, Record<ViewportMode, CharacterPlacement>> = {
     working: {
       desktop: { left: 48, bottom: 7 },
       mobile: { left: 50, bottom: 14 }
+    },
+    company_eating: {
+      desktop: { left: 50, bottom: 7 },
+      mobile: { left: 50, bottom: 13 }
+    },
+    field_work: {
+      desktop: { left: 50, bottom: 7 },
+      mobile: { left: 50, bottom: 13 }
     },
     going_home: {
       desktop: { left: 50, bottom: 9 },
@@ -665,6 +727,10 @@ export function PixelTownScene({
       desktop: { left: 51, bottom: 8 },
       mobile: { left: 50, bottom: 13 }
     },
+    shopping: {
+      desktop: { left: 50, bottom: 7 },
+      mobile: { left: 50, bottom: 13 }
+    },
     cleaning: {
       desktop: { left: 51, bottom: 6 },
       mobile: { left: 50, bottom: 12 }
@@ -672,6 +738,10 @@ export function PixelTownScene({
     sleeping: {
       desktop: { left: 52, bottom: 4 },
       mobile: { left: 50, bottom: 10 }
+    },
+    thinking: {
+      desktop: { left: 50, bottom: 7 },
+      mobile: { left: 50, bottom: 13 }
     },
     at_home: {
       desktop: { left: 51, bottom: 7 },
@@ -802,7 +872,7 @@ export function PixelTownScene({
                     ? styles.speechReading
                     : styles.speechHome;
   const selectedDaySegment = timePhase === "night" ? "night" : "day";
-  const selectedBackgroundPath = backgroundPathByStatus[activePlayer.status](viewportMode, selectedDaySegment, effectiveRaining);
+  const selectedBackgroundPath = getBackgroundPath(activePlayer, viewportMode, selectedDaySegment, effectiveRaining);
   const selectedBackgroundImage = `${selectedBackgroundPath}?v=${assetVersions[selectedBackgroundPath] ?? "0"}`;
   const selectedCharacterWidth = characterWidthByStatus[activePlayer.status][viewportMode];
   const selectedCharacterPlacementBase = characterPlacementByStatus[activePlayer.status][viewportMode];
@@ -810,10 +880,14 @@ export function PixelTownScene({
     isActiveLyra && viewportMode === "desktop"
       ? {
           working: 4,
+          company_eating: 4,
+          field_work: 4,
           going_home: 4,
           biking: 3,
+          shopping: 4,
           cleaning: 4,
           sleeping: 6,
+          thinking: 4,
           at_home: 5
         }[activePlayer.status]
       : 0;
@@ -878,7 +952,7 @@ export function PixelTownScene({
 
   const galleryPlayers: PlayerGalleryItem[] = [
     ...deckPlayers.slice(0, 4).map((player): PlayerGalleryItem => {
-      const previewBackgroundPath = backgroundPathByStatus[player.status]("desktop", selectedDaySegment, effectiveRaining);
+      const previewBackgroundPath = getBackgroundPath(player, "desktop", selectedDaySegment, effectiveRaining);
       const previewCharacterAsset = !player.isManager ? resolveCharacterStillAsset(player) : null;
       const previewCharacterPath = (() => {
         if (previewCharacterAsset) {

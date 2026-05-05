@@ -13,10 +13,14 @@ type StatusPayload = {
 function isActorStatus(status: string): status is ActorStatus {
   return (
     status === "working" ||
+    status === "company_eating" ||
+    status === "field_work" ||
     status === "going_home" ||
+    status === "shopping" ||
     status === "cleaning" ||
     status === "sleeping" ||
     status === "biking" ||
+    status === "thinking" ||
     status === "at_home"
   );
 }

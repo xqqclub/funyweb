@@ -14,7 +14,7 @@ import {
   submitPlayerApplication,
   updateApprovedPlayerStatus
 } from "@/lib/game/player-service";
-import { startOrJoinRpsMatch, submitRpsMove } from "@/lib/game/rps-service";
+import { buildTelegramManagerRpsParticipant, startOrJoinRpsMatch, submitRpsMove } from "@/lib/game/rps-service";
 import {
   announcementSpeechOptions,
   commandMap,
@@ -412,9 +412,73 @@ export async function handleTelegramAdminFlow(
     return { handled: true, response: NextResponse.json({ ok: true, action: "keyboard_section" }) };
   }
 
-  if (text === "猜拳" || rpsMoveMap[text]) {
-    await deps.sendTelegramMessage(chatId, "猜拳按鈕已顯示在鍵盤中。實際對戰請用已通過審核的玩家帳號操作；管理者帳號目前主要負責審核、知識列表與世界控制。", getTelegramControlKeyboard());
-    return { handled: true, response: NextResponse.json({ ok: true, action: "manager_game_hint" }) };
+  if (text === "猜拳") {
+    const managerParticipant = buildTelegramManagerRpsParticipant(userId);
+    const result = await startOrJoinRpsMatch(userId, managerParticipant);
+    const managerKeyboard = getTelegramControlKeyboard();
+
+    if (!result.ok) {
+      await deps.sendTelegramMessage(chatId, getPlayerStateUpdateFailedMessage(), managerKeyboard);
+      return { handled: true, response: NextResponse.json({ ok: false, error: result.reason }, { status: 500 }) };
+    }
+
+    if (result.action === "created") {
+      await deps.sendTelegramMessage(chatId, getRpsStartMessage(), managerKeyboard);
+    } else if (result.action === "waiting") {
+      await deps.sendTelegramMessage(chatId, getRpsAlreadyWaitingMessage(), managerKeyboard);
+    } else {
+      await deps.sendTelegramMessage(chatId, getRpsJoinedMessage(result.opponent?.name ?? "對手"), managerKeyboard);
+
+      if (result.opponent?.platform === "telegram") {
+        const opponentProfile = await getApprovedPlayerProfile(result.opponent.playerId);
+        await deps.sendTelegramMessage(
+          Number(result.opponent.platformUserId),
+          getRpsOpponentJoinedMessage(result.participant.name),
+          result.opponent.playerId === userId ? managerKeyboard : getPlayerKeyboardForProfile(true, opponentProfile)
+        );
+      }
+    }
+
+    return { handled: true, response: NextResponse.json({ ok: true, action: "manager_rps_start", result }) };
+  }
+
+  const managerRpsMove = rpsMoveMap[text];
+  if (managerRpsMove) {
+    const result = await submitRpsMove(userId, managerRpsMove);
+    const managerKeyboard = getTelegramControlKeyboard();
+
+    if (!result.ok) {
+      const message =
+        result.reason === "waiting_for_opponent"
+          ? getRpsWaitingOpponentMessage()
+          : result.reason === "move_already_submitted"
+            ? getRpsAlreadyMovedMessage()
+            : getRpsNoActiveMatchMessage();
+      await deps.sendTelegramMessage(chatId, message, managerKeyboard);
+      return { handled: true, response: NextResponse.json({ ok: false, action: "manager_rps_move_rejected", reason: result.reason }) };
+    }
+
+    if (result.action === "move_saved") {
+      await deps.sendTelegramMessage(chatId, getRpsMoveSavedMessage(result.move), managerKeyboard);
+      return { handled: true, response: NextResponse.json({ ok: true, action: "manager_rps_move_saved" }) };
+    }
+
+    if (result.event) {
+      await Promise.all(
+        result.event.players
+          .filter((player) => player.platform === "telegram")
+          .map(async (player) => {
+            const profile = await getApprovedPlayerProfile(player.playerId);
+            await deps.sendTelegramMessage(
+              Number(player.platformUserId),
+              getRpsResultMessage(result.event!, player.playerId),
+              player.playerId === userId ? managerKeyboard : getPlayerKeyboardForProfile(true, profile)
+            );
+          })
+      );
+    }
+
+    return { handled: true, response: NextResponse.json({ ok: true, action: "manager_rps_resolved", event: result.event }) };
   }
 
   if (text === "對話控制") {

@@ -70,7 +70,9 @@ function normalizeActorState(raw: Partial<ActorState> | undefined): {
 
 export async function saveActorState(status: ActorStatus, updatedBy: string, homeMode?: AtHomeMode): Promise<ActorStateResult> {
   const db = getFirebaseAdminDb();
-  const actorState = buildActorState(status, updatedBy, homeMode);
+  const current = status === "thinking" ? await getActorState() : null;
+  const thinkingLocation = current?.location === "office" || current?.location === "home" ? current.location : undefined;
+  const actorState = buildActorState(status, updatedBy, homeMode, thinkingLocation);
 
   if (!db) {
     return {

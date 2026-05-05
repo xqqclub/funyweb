@@ -526,6 +526,40 @@ Frontend changes:
 - the client polls `/api/game-events`
 - a `遊戲事件` section displays the latest rock-paper-scissors result
 
+## Phase 20: Manager Gameplay and Expanded Main Character States
+
+The rock-paper-scissors loop was updated so the main manager Telegram account can also participate as a player in matches.
+
+Manager gameplay changes:
+
+- manager Telegram ID can start or join a rock-paper-scissors match
+- manager can submit `石頭` / `剪刀` / `布`
+- result notifications still route through Telegram
+- manager participation does not require creating a normal player registration record
+
+New main character states were added:
+
+- `公司吃飯`
+- `外出工作`
+- `買東西`
+- `在家吃飯`
+- `沉思`
+
+Scene behavior:
+
+- `公司吃飯` and `外出工作` use the office background set
+- `買東西` and `在家吃飯` use the home background set
+- `沉思` uses the same character image in both home and office contexts
+- when the manager switches to `沉思`, the scene preserves the current home or office location
+
+New main character image assets:
+
+- `public/scenes/shared/characters/主角-公司吃飯.png`
+- `public/scenes/shared/characters/主角-外出工作.png`
+- `public/scenes/shared/characters/主角-買東西.png`
+- `public/scenes/shared/characters/主角-在家吃飯.png`
+- `public/scenes/shared/characters/主角-沉思.png`
+
 ## Current Capabilities
 
 At the current stage, the project supports:
@@ -549,6 +583,8 @@ At the current stage, the project supports:
 - LINE adapter skeleton
 - production-oriented Firestore rules
 - rock-paper-scissors multiplayer event loop
+- manager account participation in rock-paper-scissors
+- expanded main character states for eating, field work, shopping, and thinking
 
 ## Current Major Files
 

@@ -18,6 +18,15 @@ function toParticipant(player: ActorState): GameParticipant {
   };
 }
 
+export function buildTelegramManagerRpsParticipant(userId: string): GameParticipant {
+  return {
+    playerId: userId,
+    name: "D-exHor",
+    platform: "telegram",
+    platformUserId: userId
+  };
+}
+
 function getOpponent(match: GameMatch, playerId: string) {
   if (match.playerA.playerId === playerId) {
     return match.playerB;
@@ -74,13 +83,13 @@ function buildResultMessage(match: GameMatch, winnerId: string | null) {
   return `${match.playerA.name} 出了${moveA}，${match.playerB.name} 出了${moveB}，${winner.name} 勝利。`;
 }
 
-export async function startOrJoinRpsMatch(playerId: string) {
+export async function startOrJoinRpsMatch(playerId: string, fallbackParticipant?: GameParticipant) {
   const player = await getPlayerById(playerId);
-  if (!player) {
+  if (!player && !fallbackParticipant) {
     return { ok: false as const, reason: "player_not_found" };
   }
 
-  const participant = toParticipant(player);
+  const participant = player ? toParticipant(player) : fallbackParticipant!;
   const openMatches = await listOpenRpsMatches();
   const ownMatch = openMatches.find((match) => match.playerA.playerId === playerId || match.playerB?.playerId === playerId);
 

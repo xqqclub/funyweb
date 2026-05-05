@@ -19,12 +19,33 @@ export const statusMeta: Record<
     emoji: "PC",
     accent: "#ffcc4d"
   },
+  company_eating: {
+    label: "公司吃飯",
+    description: "主角在公司用餐，短暫補充體力後準備回到任務節奏。",
+    location: "office",
+    emoji: "ME",
+    accent: "#f1a96d"
+  },
+  field_work: {
+    label: "外出工作",
+    description: "主角外出處理工作任務，場景維持辦公區與城市行動感。",
+    location: "office",
+    emoji: "FW",
+    accent: "#7cc6ff"
+  },
   going_home: {
     label: "回家中",
     description: "主角穿過街道返回住宅區，城市節奏也跟著慢下來。",
     location: "road",
     emoji: "GO",
     accent: "#8ed1fc"
+  },
+  shopping: {
+    label: "買東西",
+    description: "主角在住家附近買東西，畫面會偏向日常生活與補給感。",
+    location: "home",
+    emoji: "SH",
+    accent: "#f4c76d"
   },
   cleaning: {
     label: "打掃中",
@@ -46,6 +67,13 @@ export const statusMeta: Record<
     location: "road",
     emoji: "BK",
     accent: "#7fc8f8"
+  },
+  thinking: {
+    label: "沉思",
+    description: "主角暫停腳步整理思緒，會依目前所在區域切換公司或住家背景。",
+    location: "home",
+    emoji: "TH",
+    accent: "#c6d4ff"
   },
   at_home: {
     label: "在家",
@@ -109,12 +137,12 @@ export const atHomeModeMeta: Record<
   }
 };
 
-export function buildActorState(status: ActorStatus, updatedBy: string, homeMode?: AtHomeMode): ActorState {
+export function buildActorState(status: ActorStatus, updatedBy: string, homeMode?: AtHomeMode, locationOverride?: ActorLocation): ActorState {
   return {
     ...defaultActorState,
     status,
     homeMode: status === "at_home" ? homeMode ?? defaultActorState.homeMode : defaultActorState.homeMode,
-    location: statusMeta[status].location,
+    location: locationOverride ?? statusMeta[status].location,
     updatedAt: new Date().toISOString(),
     updatedBy
   };
